@@ -429,7 +429,7 @@
 
             // Check if we have folder and count
             if (folder && count) {
-                // 计算可查看的图片数量（非会员最多6张）
+                // 计算可查看的图片数量（非会员只能查看1.jpg到6.jpg）
                 const viewableCount = isMember ? count : Math.min(6, count);
 
                 // Generate image elements
