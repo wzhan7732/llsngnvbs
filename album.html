@@ -128,33 +128,6 @@
             font-size: 1.2rem;
         }
 
-        /* 下载按钮样式 */
-        .download-btn {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 3px 8px rgba(76, 175, 80, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            text-decoration: none;
-        }
-
-        .download-btn:hover {
-            background-color: #45a049;
-            transform: translateY(-2px);
-        }
-
-        .download-icon {
-            font-size: 1.2rem;
-        }
-
         /* 添加相册画廊响应式样式 */
         #album-gallery.gallery {
             display: grid;
@@ -338,8 +311,6 @@
     <main class="gallery-container">
         <div class="album-header">
             <button class="back-btn" id="back-to-gallery"><span class="back-btn-icon">←</span> 返回列表</button>
-            <a href="#" class="download-btn" id="download-album" target="_blank"><span class="download-icon">↓</span>
-                下载相册</a>
         </div>
         <div id="member-upgrade" class="member-upgrade" style="display: none;">
             <h3>查看更多精彩内容</h3>
@@ -373,7 +344,6 @@
             const memberText = document.getElementById('member-text');
             const memberUpgrade = document.getElementById('member-upgrade');
             const backToGalleryBtn = document.getElementById('back-to-gallery');
-            const downloadAlbumBtn = document.getElementById('download-album');
 
             // 返回相册列表按钮点击事件
             backToGalleryBtn.addEventListener('click', function () {
@@ -425,30 +395,6 @@
             // 修复路径格式
             folder = folder ? folder.replace(/\\/g, '/') : '';
 
-            // 设置下载链接
-            if (folder) {
-                // 提取文件夹名（不含路径）
-                const folderName = folder.split('/').pop();
-                // 设置下载链接 - 这里使用一个占位符，您可以替换为实际的下载链接
-                const downloadLink = `https://example.com/download/${encodeURIComponent(folderName)}`;
-                downloadAlbumBtn.href = downloadLink;
-
-                // 自定义下载链接映射表 - 您可以根据需要添加更多映射
-                const customDownloadLinks = {
-                    '美女写真 - 次元岛': 'https://your-download-link-1.com',
-                    '蜜桃成熟时爱丽丝多汁胴体丝滑可口': 'https://your-download-link-2.com',
-                    // 添加更多映射...
-                };
-
-                // 如果有自定义链接，则使用自定义链接
-                if (customDownloadLinks[folderName]) {
-                    downloadAlbumBtn.href = customDownloadLinks[folderName];
-                }
-            } else {
-                // 如果没有文件夹信息，隐藏下载按钮
-                downloadAlbumBtn.style.display = 'none';
-            }
-
             // 处理特殊字符路径
             function tryEncodePath(path) {
                 // 尝试不同的编码方式
@@ -483,11 +429,11 @@
 
             // Check if we have folder and count
             if (folder && count) {
-                // 计算可查看的图片数量（最多6张）
-                const viewableCount = Math.min(6, count);
+                // 计算可查看的图片数量（非会员最多6张）
+                const viewableCount = isMember ? count : Math.min(6, count);
 
                 // Generate image elements
-                for (let i = 1; i <= viewableCount; i++) {
+                for (let i = 1; i <= count; i++) {
                     // Create gallery item
                     const galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
