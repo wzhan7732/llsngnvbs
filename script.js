@@ -543,7 +543,17 @@ document.addEventListener('DOMContentLoaded', function () {
         // 确保正确编码
         const encodedFolderPath = tryEncodePath(fixedFolderPath);
 
-        window.location.href = `album.html?id=${album.id}&folder=${encodeURIComponent(encodedFolderPath)}&title=${encodeURIComponent(album.title)}&count=${album.count}`;
+        // 默认网盘链接（可以根据相册ID或其他属性设置）
+        let downloadUrl = "";
+        // 如果相册有自定义下载链接，则优先使用
+        if (album.downloadUrl) {
+            downloadUrl = album.downloadUrl;
+        } else if (album.id) {
+            // 否则基于相册ID构建一个默认链接
+            downloadUrl = `https://pan.baidu.com/s/1${album.id}`;
+        }
+
+        window.location.href = `album.html?id=${album.id}&folder=${encodeURIComponent(encodedFolderPath)}&title=${encodeURIComponent(album.title)}&count=${album.count}&downloadUrl=${encodeURIComponent(downloadUrl)}`;
     }
 
     // 检查是否从相册页面返回，恢复上次的页码和滚动位置
@@ -582,4 +592,101 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 在页面加载完成后检查是否需要恢复位置
     checkReturnFromAlbum();
+
+    // 搜索功能实现
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+    const searchResults = document.getElementById('search-results');
+    const searchResultsContainer = document.getElementById('search-results-container');
+    const searchResultsCount = document.getElementById('search-results-count');
+
+    // 搜索算法
+    function searchAlbums(query) {
+        if (!query || query.trim() === '') return [];
+
+        query = query.toLowerCase().trim();
+
+        return albums.filter(album => {
+            // 搜索标题
+            if (album.title.toLowerCase().includes(query)) {
+                return true;
+            }
+
+            // 搜索标签
+            if (album.tags && album.tags.some(tag => tag.toLowerCase().includes(query))) {
+                return true;
+            }
+
+            // 搜索ID (如果需要)
+            if (album.id && album.id.toLowerCase().includes(query)) {
+                return true;
+            }
+
+            // 搜索文件夹名称
+            if (album.folder && album.folder.toLowerCase().includes(query)) {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    // 显示搜索结果
+    function displaySearchResults(results) {
+        // 清空搜索结果容器
+        searchResultsContainer.innerHTML = '';
+
+        // 更新搜索结果数量
+        searchResultsCount.textContent = results.length;
+
+        if (results.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'search-no-results';
+            noResults.textContent = '没有找到匹配的相册，请尝试其他搜索词。';
+            searchResultsContainer.appendChild(noResults);
+        } else {
+            // 渲染搜索结果
+            results.forEach(album => {
+                const albumElement = createAlbumElement(album);
+                searchResultsContainer.appendChild(albumElement);
+            });
+        }
+
+        // 显示搜索结果区域
+        searchResults.classList.add('visible');
+
+        // 如果有搜索结果，滚动到搜索结果区域
+        if (results.length > 0) {
+            searchResults.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    // 执行搜索
+    function performSearch() {
+        const query = searchInput.value;
+        if (!query || query.trim() === '') {
+            searchResults.classList.remove('visible');
+            return;
+        }
+
+        const results = searchAlbums(query);
+        displaySearchResults(results);
+    }
+
+    // 点击搜索按钮时执行搜索
+    searchButton.addEventListener('click', performSearch);
+
+    // 按下 Enter 键时执行搜索
+    searchInput.addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            performSearch();
+        }
+    });
+
+    // 输入内容清空时，隐藏搜索结果
+    searchInput.addEventListener('input', function () {
+        if (this.value.trim() === '') {
+            searchResults.classList.remove('visible');
+        }
+    });
 }); 

@@ -291,6 +291,220 @@
                 max-width: 90%;
             }
         }
+
+        /* 缩略图容器样式 */
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        .thumbnail-container.loading::before {
+            content: "加载中...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #666;
+            font-size: 14px;
+        }
+
+        .thumbnail-container.error::before {
+            content: "图片加载失败";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff5555;
+            font-size: 14px;
+        }
+
+        .thumbnail-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        /* 下载按钮样式 */
+        .download-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(46, 204, 113, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .download-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+
+        .download-btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 300px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            font-size: 16px;
+            padding-left: 40px;
+        }
+
+        .search-button {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 搜索高亮样式 */
+        @keyframes searchHighlight {
+            0% {
+                box-shadow: 0 0 0 rgba(255, 121, 198, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(255, 121, 198, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 0 rgba(255, 121, 198, 0.5);
+            }
+        }
+
+        .search-highlight {
+            animation: searchHighlight 2s ease;
+            z-index: 10;
+        }
+
+        /* 移动端适配增强 */
+        @media (max-width: 576px) {
+            .album-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                width: 100%;
+                gap: 8px;
+            }
+
+            .download-btn {
+                margin-left: 0;
+                flex-shrink: 0;
+            }
+
+            .back-btn {
+                flex-shrink: 0;
+            }
+
+            .search-container {
+                width: 100%;
+                margin: 15px 0;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+                max-width: 100%;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 400px) {
+
+            .back-btn,
+            .download-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+            .back-btn-icon,
+            .download-btn-icon {
+                font-size: 1rem;
+            }
+
+            .member-upgrade h3 {
+                font-size: 16px;
+            }
+
+            .member-upgrade p {
+                font-size: 14px;
+            }
+
+            .member-upgrade-btn {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .search-input {
+                padding: 8px;
+                font-size: 13px;
+            }
+
+            .search-icon {
+                width: 18px;
+                height: 18px;
+            }
+        }
+
+        @media (max-width: 359px) {
+            .album-header {
+                justify-content: center;
+                gap: 6px;
+            }
+
+            .back-btn,
+            .download-btn {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .back-btn-icon,
+            .download-btn-icon {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 
@@ -308,9 +522,25 @@
         <p id="album-count"></p>
     </header>
 
+    <!-- 搜索框 -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" id="search-input" placeholder="搜索图片..." autocomplete="off">
+            <button class="search-button" id="search-button">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <main class="gallery-container">
         <div class="album-header">
             <button class="back-btn" id="back-to-gallery"><span class="back-btn-icon">←</span> 返回列表</button>
+            <a href="#" class="download-btn" id="download-btn" target="_blank"><span class="download-btn-icon">⬇️</span>
+                下载全部</a>
         </div>
         <div id="member-upgrade" class="member-upgrade" style="display: none;">
             <h3>查看更多精彩内容</h3>
@@ -344,6 +574,7 @@
             const memberText = document.getElementById('member-text');
             const memberUpgrade = document.getElementById('member-upgrade');
             const backToGalleryBtn = document.getElementById('back-to-gallery');
+            const downloadBtn = document.querySelector('.download-btn');
 
             // 返回相册列表按钮点击事件
             backToGalleryBtn.addEventListener('click', function () {
@@ -391,6 +622,16 @@
             const title = urlParams.get('title');
             const count = parseInt(urlParams.get('count')) || 0;
             const albumId = urlParams.get('id') || '';
+            const downloadUrl = urlParams.get('downloadUrl') || '';
+
+            // 设置下载按钮的链接
+            if (downloadUrl) {
+                downloadBtn.href = downloadUrl;
+            } else {
+                // 如果没有提供下载链接，则使用默认设置或隐藏按钮
+                // 这里可以根据需要修改，比如设置一个默认的网盘链接模板
+                downloadBtn.href = `https://share.feijipan.com/s/R1Hq8tAd?code=2gat`;
+            }
 
             // 修复路径格式
             folder = folder ? folder.replace(/\\/g, '/') : '';
@@ -429,7 +670,7 @@
 
             // Check if we have folder and count
             if (folder && count) {
-                // 计算可查看的图片数量（非会员只能查看1.jpg到6.jpg）
+                // 计算可查看的图片数量（非会员最多6张）
                 const viewableCount = isMember ? count : Math.min(6, count);
 
                 // Generate image elements
@@ -526,6 +767,89 @@
             const prevBtn = document.getElementById('prev-btn');
             const nextBtn = document.getElementById('next-btn');
             const sassyText = document.getElementById('sassy-text');
+
+            // 搜索功能实现
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+
+            // 保存所有图片元素的引用，方便搜索功能使用
+            const allImageElements = [];
+
+            // 从相册画廊中获取所有图片元素
+            function getAllImages() {
+                const images = albumGallery.querySelectorAll('.gallery-item');
+                return Array.from(images);
+            }
+
+            // 在页面加载完成后获取所有图片元素
+            setTimeout(() => {
+                const images = getAllImages();
+                allImageElements.push(...images);
+            }, 500);
+
+            // 处理搜索功能
+            function handleSearch() {
+                const searchTerm = searchInput.value.trim().toLowerCase();
+                if (searchTerm === '') {
+                    // 如果搜索词为空，显示所有图片
+                    allImageElements.forEach(item => {
+                        item.style.display = '';
+                    });
+                    return;
+                }
+
+                // 使用数字搜索（例如 "5" 会显示第5张图）
+                const isNumeric = /^\d+$/.test(searchTerm);
+
+                allImageElements.forEach((item, index) => {
+                    const img = item.querySelector('img');
+                    const imgAlt = img ? img.alt.toLowerCase() : '';
+
+                    if (isNumeric) {
+                        // 如果是数字搜索，匹配图片索引
+                        const searchNumber = parseInt(searchTerm);
+                        if (index + 1 === searchNumber) {
+                            item.style.display = '';
+
+                            // 平滑滚动到找到的图片
+                            setTimeout(() => {
+                                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                // 高亮效果
+                                item.classList.add('search-highlight');
+                                setTimeout(() => {
+                                    item.classList.remove('search-highlight');
+                                }, 2000);
+                            }, 100);
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    } else {
+                        // 一般文本搜索，匹配图片alt文本
+                        if (imgAlt.includes(searchTerm)) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    }
+                });
+            }
+
+            // 添加搜索事件监听器
+            searchButton.addEventListener('click', handleSearch);
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+
+            // 当用户清空搜索框时，显示所有图片
+            searchInput.addEventListener('input', function () {
+                if (this.value.trim() === '') {
+                    allImageElements.forEach(item => {
+                        item.style.display = '';
+                    });
+                }
+            });
 
             // 温柔暧昧的文字描述
             const albumSassyPhrases = {
