@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会员中心 - 柔情蜜意</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .member-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .member-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .btn-login {
+            padding: 12px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #ff5252;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .member-info {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .member-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+        }
+
+        .status-active {
+            background-color: #28a745;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 会员价格表样式 */
+        .pricing-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .pricing-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .pricing-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .pricing-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #eee;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-card.popular {
+            border: 2px solid #ff6b6b;
+            position: relative;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .pricing-period {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .pricing-price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .pricing-features {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .pricing-button {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        .pricing-button:hover {
+            background-color: #ff5252;
+        }
+
+        .single-album {
+            margin-top: 20px;
+            text-align: center;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .single-album-price {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>柔情蜜意</h1>
+    </header>
+
+    <div class="member-container">
+        <h2>会员中心</h2>
+
+        <div class="member-info">
+            <div class="member-status">
+                <div id="status-indicator" class="status-indicator"></div>
+                <div id="member-status-text">当前状态: 非会员</div>
+            </div>
+            <p>会员可以查看所有相册的全部图片，非会员只能查看每个相册的前6张图片。</p>
+        </div>
+
+        <!-- 会员价格表 -->
+        <div class="pricing-container">
+            <h3 class="pricing-title">会员价格</h3>
+            <div class="pricing-options">
+                <div class="pricing-card">
+                    <div class="pricing-period">月会员</div>
+                    <div class="pricing-price">39元</div>
+                    <div class="pricing-features">
+                        <p>30天无限查看</p>
+                        <p>所有相册全部解锁</p>
+                        <p>高清原图下载</p>
+                    </div>
+                    <button class="pricing-button">立即开通</button>
+                </div>
+
+                <div class="pricing-card popular">
+                    <span class="popular-badge">推荐</span>
+                    <div class="pricing-period">季会员</div>
+                    <div class="pricing-price">69元</div>
+                    <div class="pricing-features">
+                        <p>90天无限查看</p>
+                        <p>所有相册全部解锁</p>
+                        <p>高清原图下载</p>
+                        <p>新增相册优先查看</p>
+                    </div>
+                    <button class="pricing-button">立即开通</button>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-period">年会员</div>
+                    <div class="pricing-price">99元</div>
+                    <div class="pricing-features">
+                        <p>365天无限查看</p>
+                        <p>所有相册全部解锁</p>
+                        <p>高清原图下载</p>
+                        <p>新增相册优先查看</p>
+                        <p>会员专属服务</p>
+                    </div>
+                    <button class="pricing-button">立即开通</button>
+                </div>
+            </div>
+
+            <div class="single-album">
+                <p>单个相册购买: <span class="single-album-price">心动/个</span></p>
+                <p>单独购买相册，永久查看该相册的所有图片</p>
+            </div>
+        </div>
+
+        <div id="login-form" class="member-form">
+            <div class="form-group">
+                <label for="password">会员密码</label>
+                <input type="password" id="password" placeholder="请输入会员密码">
+            </div>
+            <button id="btn-login" class="btn-login">验证会员</button>
+        </div>
+
+        <div id="status-message" class="status-message" style="display: none;"></div>
+
+        <a href="index.html" class="back-link">返回首页</a>
+        <a href="admin.html" class="back-link" style="margin-left: 20px;">管理中心</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 柔情蜜意. 保留所有权利.</p>
+    </footer>
+
+    <!-- 引入配置文件 -->
+    <script src="config.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginBtn = document.getElementById('btn-login');
+            const passwordInput = document.getElementById('password');
+            const statusMessage = document.getElementById('status-message');
+            const statusIndicator = document.getElementById('status-indicator');
+            const memberStatusText = document.getElementById('member-status-text');
+
+            // 检查会员状态
+            checkMemberStatus();
+
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', function () {
+                verifyMembership();
+            });
+
+            // 密码输入框回车事件
+            passwordInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    verifyMembership();
+                }
+            });
+
+            // 会员价格按钮点击事件
+            document.querySelectorAll('.pricing-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    showStatusMessage('请联系客服获取会员密码', 'info');
+                });
+            });
+
+            // 验证会员
+            function verifyMembership() {
+                const password = passwordInput.value.trim();
+
+                // 从配置文件获取正确密码
+                const correctPassword = MEMBER_CONFIG.password;
+                const currentPasswordVersion = MEMBER_CONFIG.passwordVersion;
+
+                if (password === correctPassword) {
+                    // 设置会员状态
+                    localStorage.setItem('memberStatus', 'active');
+                    localStorage.setItem('memberExpiry', Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30天有效期
+                    localStorage.setItem('passwordVersion', currentPasswordVersion); // 保存当前密码版本
+
+                    // 更新界面
+                    showStatusMessage('会员验证成功！您现在可以查看所有图片。', 'success');
+                    updateMemberStatus(true);
+
+                    // 清空密码输入
+                    passwordInput.value = '';
+                } else {
+                    // 验证失败
+                    showStatusMessage('密码不正确，请重试。', 'error');
+                }
+            }
+
+            // 显示状态消息
+            function showStatusMessage(message, type) {
+                statusMessage.textContent = message;
+                statusMessage.className = 'status-message';
+                statusMessage.classList.add(`status-${type}`);
+                statusMessage.style.display = 'block';
+
+                // 3秒后隐藏消息
+                setTimeout(() => {
+                    statusMessage.style.display = 'none';
+                }, 3000);
+            }
+
+            // 检查会员状态
+            function checkMemberStatus() {
+                const memberStatus = localStorage.getItem('memberStatus');
+                const memberExpiry = localStorage.getItem('memberExpiry');
+                const savedPasswordVersion = localStorage.getItem('passwordVersion');
+                const currentPasswordVersion = MEMBER_CONFIG.passwordVersion;
+
+                // 检查密码版本是否匹配
+                if (savedPasswordVersion !== currentPasswordVersion) {
+                    // 密码已更改，清除会员状态
+                    localStorage.removeItem('memberStatus');
+                    localStorage.removeItem('memberExpiry');
+                    localStorage.removeItem('passwordVersion');
+                    updateMemberStatus(false);
+                    showStatusMessage('会员密码已更新，请重新验证。', 'error');
+                    return;
+                }
+
+                // 检查会员是否有效
+                if (memberStatus === 'active' && memberExpiry && parseInt(memberExpiry) > Date.now()) {
+                    updateMemberStatus(true);
+                } else {
+                    // 会员已过期或不存在
+                    localStorage.removeItem('memberStatus');
+                    localStorage.removeItem('memberExpiry');
+                    localStorage.removeItem('passwordVersion');
+                    updateMemberStatus(false);
+                }
+            }
+
+            // 更新会员状态显示
+            function updateMemberStatus(isActive) {
+                if (isActive) {
+                    statusIndicator.classList.add('status-active');
+                    memberStatusText.textContent = '当前状态: 会员 (已激活)';
+                } else {
+                    statusIndicator.classList.remove('status-active');
+                    memberStatusText.textContent = '当前状态: 非会员';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
